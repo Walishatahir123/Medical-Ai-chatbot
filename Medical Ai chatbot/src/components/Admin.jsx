@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 
-const BASE_URL = "http://localhost:8000";
+// ✅ After
+
+const BASE_URL = "https://walisha-medical-ai-backend.hf.space";
 
 export default function Admin() {
   const [loggedIn, setLoggedIn] = useState(false);
