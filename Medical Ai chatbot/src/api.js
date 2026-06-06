@@ -1,5 +1,5 @@
 
-const BASE_URL = "https://Walisha-medical-ai-backend.hf.space";  // FastAPI / Django / etc.🔁 Change this to your backend URL
+const BASE_URL = "https://walisha-medical-ai-backend.hf.space";  // FastAPI / Django / etc.🔁 Change this to your backend URL
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
