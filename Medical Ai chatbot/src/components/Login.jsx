@@ -4,7 +4,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import styles from "./Login.module.css";
 
 // ✅ Always points to HuggingFace backend (set in .env as VITE_API_URL)
-
+// const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const API_URL = "https://walisha-medical-ai-backend.hf.space";
 
 export default function Login({ onLogin }) {
@@ -225,4 +225,3 @@ export default function Login({ onLogin }) {
     </div>
   );
 }
-s
