@@ -1,0 +1,78 @@
+.wrap {
+  padding: 10px 20px 14px;
+  background: white;
+  border-top: 0.5px solid #e2e8f0;
+}
+
+.sugs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.sug {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 0.5px solid #cbd5e1;
+  background: white;
+  color: #8895a7;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.sug:hover:not(:disabled) {
+  border-color: #1d9e75;
+  color: #0f6e56;
+  background: #e1f5ee;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.box {
+  flex: 1;
+  background: #f8fafc;
+  border: 0.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #1a2332;
+  resize: none;
+  outline: none;
+  line-height: 1.5;
+  max-height: 100px;
+}
+
+.box:focus {
+  border-color: #1d9e75;
+}
+
+.btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #1d9e75;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.btn:disabled {
+  opacity: .4;
+  cursor: default;
+}
+
+.disc {
+  font-size: 11px;
+  color: #8895a7;
+  text-align: center;
+  margin-top: 6px;
+}

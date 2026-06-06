@@ -1,0 +1,72 @@
+.bar {
+  padding: 12px 20px;
+  background: white;
+  border-bottom: 0.5px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1d9e75;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1
+  }
+
+  50% {
+    opacity: .4
+  }
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a2332;
+}
+
+.sub {
+  font-size: 11px;
+  color: #8895a7;
+}
+
+.right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: #e1f5ee;
+  color: #0f6e56;
+  font-weight: 500;
+}
+
+.dlBtn {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: #1a2332;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+}
