@@ -1,10 +1,8 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { authAPI } from "../api";
 import { useGoogleLogin } from "@react-oauth/google";
 import styles from "./Login.module.css";
 
-// ✅ Always points to HuggingFace backend (set in .env as VITE_API_URL)
-// const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const API_URL = "https://walisha-medical-ai-backend.hf.space";
 
 export default function Login({ onLogin }) {
@@ -22,27 +20,6 @@ export default function Login({ onLogin }) {
 
     if (mode === "register" && !name.trim()) {
       setError("Full name is required.");
-      return;
-    }
-
-    if (mode === "forgot") {
-      if (!email.trim()) { setError("Email is required."); return; }
-      setLoading(true);
-      try {
-        const r = await fetch(`${API_URL}/auth/forgot-password`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email })
-        });
-        const res = await r.json();
-        if (!r.ok) throw new Error(res.detail || "Failed");
-        setSuccess("Password reset email sent! Check your inbox.");
-        setMode("login");
-      } catch (err) {
-        setError(err.message || "Failed to send reset email. Please try again.");
-      } finally {
-        setLoading(false);
-      }
       return;
     }
 
@@ -82,13 +59,11 @@ export default function Login({ onLogin }) {
       setLoading(true);
       setError("");
       try {
-        // Step 1: Get user info from Google
         const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
           headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
         });
         const userInfo = await userInfoRes.json();
 
-        // Step 2: Send to YOUR backend (HuggingFace) ✅
         const r = await fetch(`${API_URL}/auth/google`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -133,40 +108,41 @@ export default function Login({ onLogin }) {
         </div>
 
         <h2 className={styles.title}>
-          {mode === "login" ? "Welcome back" : mode === "register" ? "Create account" : "Reset Password"}
+          {mode === "login" ? "Welcome back" : "Create account"}
         </h2>
         <p className={styles.sub}>
-          {mode === "login"
-            ? "Sign in to your session"
-            : mode === "register"
-              ? "Register to get started"
-              : "Enter your email to receive a reset link"}
+          {mode === "login" ? "Sign in to your session" : "Register to get started"}
         </p>
 
         {mode === "register" && (
-          <input className={styles.inp} placeholder="Full name"
-            value={name} onChange={e => setName(e.target.value)} />
+          <input
+            className={styles.inp}
+            placeholder="Full name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+          />
         )}
 
-        <input className={styles.inp} placeholder="Email address" type="email"
-          value={email} onChange={e => setEmail(e.target.value)} />
+        <input
+          className={styles.inp}
+          placeholder="Email address"
+          type="email"
+          id="email"
+          name="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
 
-        {mode !== "forgot" && (
-          <input className={styles.inp} placeholder="Password" type="password"
-            value={password} onChange={e => setPass(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && submit()} />
-        )}
-
-        {mode === "login" && (
-          <div style={{ textAlign: "right", marginTop: -4, marginBottom: 8 }}>
-            <span
-              style={{ fontSize: 13, color: "#1d9e75", cursor: "pointer" }}
-              onClick={() => { setMode("forgot"); setError(""); setSuccess(""); }}
-            >
-              Forgot password?
-            </span>
-          </div>
-        )}
+        <input
+          className={styles.inp}
+          placeholder="Password"
+          type="password"
+          id="password"
+          name="password"
+          value={password}
+          onChange={e => setPass(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && submit()}
+        />
 
         {error && <div className={styles.error}>{error}</div>}
         {success && (
@@ -176,50 +152,41 @@ export default function Login({ onLogin }) {
         )}
 
         <button className={styles.btn} onClick={submit} disabled={loading}>
-          {loading ? "Please wait..." : mode === "login" ? "Sign In" : mode === "register" ? "Create Account" : "Send Reset Link"}
+          {loading ? "Please wait..." : mode === "login" ? "Sign In" : "Create Account"}
         </button>
 
-        {mode !== "forgot" && (
-          <>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "12px 0" }}>
-              <div style={{ flex: 1, height: 1, background: "#e5e7eb" }} />
-              <span style={{ fontSize: 12, color: "#9ca3af" }}>or</span>
-              <div style={{ flex: 1, height: 1, background: "#e5e7eb" }} />
-            </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "12px 0" }}>
+          <div style={{ flex: 1, height: 1, background: "#e5e7eb" }} />
+          <span style={{ fontSize: 12, color: "#9ca3af" }}>or</span>
+          <div style={{ flex: 1, height: 1, background: "#e5e7eb" }} />
+        </div>
 
-            <button
-              onClick={() => googleLogin()}
-              disabled={loading}
-              style={{
-                width: "100%", padding: "10px",
-                border: "1px solid #e5e7eb", borderRadius: 8,
-                background: "#fff", color: "#374151",
-                fontSize: 14, cursor: "pointer",
-                display: "flex", alignItems: "center",
-                justifyContent: "center", gap: 8
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 48 48">
-                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
-                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
-                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
-                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
-              </svg>
-              Continue with Google
-            </button>
-          </>
-        )}
+        <button
+          onClick={() => googleLogin()}
+          disabled={loading}
+          style={{
+            width: "100%", padding: "10px",
+            border: "1px solid #e5e7eb", borderRadius: 8,
+            background: "#fff", color: "#374151",
+            fontSize: 14, cursor: "pointer",
+            display: "flex", alignItems: "center",
+            justifyContent: "center", gap: 8
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+          </svg>
+          Continue with Google
+        </button>
 
         <p className={styles.switch}>
-          {mode === "forgot" ? "Remember your password? " : mode === "login" ? "No account? " : "Already registered? "}
-          <span className={styles.link} onClick={() => { setMode("login"); setError(""); setSuccess(""); }}>
-            {mode === "forgot" ? "Sign In" : ""}
+          {mode === "login" ? "No account? " : "Already registered? "}
+          <span className={styles.link} onClick={switchMode}>
+            {mode === "login" ? "Register" : "Sign In"}
           </span>
-          {mode !== "forgot" && (
-            <span className={styles.link} onClick={switchMode}>
-              {mode === "login" ? "Register" : "Sign In"}
-            </span>
-          )}
         </p>
       </div>
     </div>
